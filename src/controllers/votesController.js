@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { ObjectId } from "mongodb";
-import { choicesCollection, votesCollection } from "../database/db.js";
+import { votesCollection } from "../database/db.js";
 
 export async function postVote(req, res, next) {
   const choiceId = ObjectId(req.params.id);
@@ -10,8 +10,4 @@ export async function postVote(req, res, next) {
   votesCollection.insertOne({createdAt, choiceId});
 
   res.sendStatus(201);
-}
-
-export async function getPollResult(req, res, next) {
-    
 }
