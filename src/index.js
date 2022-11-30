@@ -1,13 +1,17 @@
 import express from "express";
 import cors from "cors";
-import { MongoClient } from "mongodb";
-import dotenv from "dotenv";
+import pollsRoute from "./routes/pollsRoute.js";
+import choicesRoute from "./routes/choicesRoute.js"
+import votesRoute from "./routes/votesRoute.js"
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
-dotenv.config();
+
+app.use(pollsRoute);
+app.use(choicesRoute);
+app.use(votesRoute);
 
 const port = process.env.PORT || 5000;
 
