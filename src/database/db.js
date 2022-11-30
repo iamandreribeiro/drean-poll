@@ -16,3 +16,4 @@ const db = client.db("dreanPoll");
 
 export const pollsCollection = db.collection("polls");
 export const choicesCollection = db.collection("choices");
+export const votesCollection = db.collection("votes");
