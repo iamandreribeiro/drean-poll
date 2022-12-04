@@ -7,7 +7,7 @@ export async function postChoice(req, res, next) {
 
   choicesCollection.insertOne({ title, pollId });
 
-  res.sendStatus(201);
+  return res.sendStatus(201);
 }
 
 export async function getChoices(req, res, next) {
@@ -19,5 +19,5 @@ export async function getChoices(req, res, next) {
     choice.pollId.equals(pollId)
   );
 
-  res.status(200).send(filteredChoices);
+  return res.status(200).send(filteredChoices);
 }

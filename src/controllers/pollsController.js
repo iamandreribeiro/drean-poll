@@ -6,22 +6,22 @@ export async function postPoll(req, res) {
 
   pollsCollection.insertOne({ title, expireAt });
 
-  res.sendStatus(201);
+  return res.sendStatus(201);
 }
 
 export async function getPolls(req, res) {
   const polls = await pollsCollection.find({}).toArray();
 
-  res.send(polls);
+  return res.send(polls);
 }
 
 export async function getPollResult(req, res, next) {
-    const pollId = ObjectId(req.params.id);
+  const pollId = ObjectId(req.params.id);
 
-    const poll = await pollsCollection.find({_id: pollId}).toArray();
+  const poll = await pollsCollection.find({ _id: pollId }).toArray();
 
-    const choices = await choicesCollection.find({pollId: pollId}).toArray();
+  const choices = await choicesCollection.find({ pollId: pollId }).toArray();
 
-    console.log(poll);
-    console.log(choices);
+  console.log(poll);
+  console.log(choices);
 }

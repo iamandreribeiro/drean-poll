@@ -12,7 +12,7 @@ export async function pollValidation(req, res, next) {
 
   if (validation.error) {
     const errors = validation.error.details.map((error) => error.message);
-    res.status(422).send(errors);
+    return res.status(422).send(errors);
   }
 
   next();
@@ -24,7 +24,7 @@ export async function pollResultValidation(req, res, next) {
   const pollExist = await pollsCollection.find({_id: pollId}).toArray();
 
   if(pollExist.length === 0) {
-    res.sendStatus(404);
+    return res.sendStatus(404);
   }
 
   next();

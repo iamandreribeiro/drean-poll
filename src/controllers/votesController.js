@@ -9,5 +9,5 @@ export async function postVote(req, res, next) {
 
   votesCollection.insertOne({createdAt, choiceId});
 
-  res.sendStatus(201);
+  return res.sendStatus(201);
 }
