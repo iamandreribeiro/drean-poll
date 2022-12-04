@@ -55,19 +55,19 @@ export async function pollResultValidation(req, res, next) {
 
   let winnerOption = "";
   let qttVotes = 0;
-  let winnerNotExists = 1;
+  let tieChecker = 0;
 
   const promise = choices.map(async (choice) => {
     const votes = await votesCollection
       .find({ choiceId: choice._id })
       .toArray();
 
-    if (votes.length > qttVotes) {
-      winnerOption = choice.title;
-      qttVotes = votes.length;
-    } else if (votes.length === qttVotes) {
-      winnerNotExists++;
-    }
+      if (votes.length > qttVotes) {
+        winnerOption = choice.title;
+        qttVotes = votes.length;
+      } else if (votes.length === qttVotes) {
+        tieChecker++;
+      }
   });
 
   await Promise.all(promise);
@@ -82,7 +82,7 @@ export async function pollResultValidation(req, res, next) {
     },
   };
 
-  if (!winnerOption || winnerNotExists === choices.length) {
+  if (!winnerOption || (choices.length > 2 && tieChecker === choices.length-1)) {
     return res.status(404).send("Não foi possível encontrar um vencedor 😥😥");
   }
 
