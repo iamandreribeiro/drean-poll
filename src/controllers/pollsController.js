@@ -1,8 +1,10 @@
 import { ObjectId } from "mongodb";
+import dayjs from "dayjs";
 import { choicesCollection, pollsCollection } from "../database/db.js";
 
 export async function postPoll(req, res) {
-  const { title, expireAt } = req.body;
+  const title = req.body.title;
+  const expireAt = req.body.expireAt ? expireAt : newExpireAt();
 
   pollsCollection.insertOne({ title, expireAt });
 
@@ -49,4 +51,10 @@ export async function getPollResult(req, res, next) {
   };
 
   return res.status(202).send(winner);
+}
+
+function newExpireAt() {
+  const date = new Date();
+  date.setDate(date.getDate() + 30);
+  return `${date.toISOString().split('T')[0]}` + ` ` + `${dayjs().format('HH-mm')}`;  
 }
