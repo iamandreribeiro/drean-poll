@@ -22,6 +22,31 @@ export async function getPollResult(req, res, next) {
 
   const choices = await choicesCollection.find({ pollId: pollId }).toArray();
 
-  console.log(poll);
-  console.log(choices);
+  let winnerOption = "";
+  let qttVotes = 0;
+
+  const promise = choices.map(async (choice) => {
+    const votes = await votesCollection
+      .find({ choiceId: choice._id })
+      .toArray();
+
+    if (votes.length > qttVotes) {
+      winnerOption = choice.title;
+      qttVotes = votes.length;
+    }
+  });
+
+  await Promise.all(promise);
+
+  const winner = {
+    _id: pollId.toString().replace(/ObjectId\("(.*)"\)/, "$1"),
+    title: poll[0].title,
+    expireAt: poll[0].expireAt,
+    result: {
+      title: winnerOption,
+      votes: qttVotes,
+    },
+  };
+
+  return res.status(202).send(winner);
 }
