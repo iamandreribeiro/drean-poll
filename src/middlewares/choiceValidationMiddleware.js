@@ -39,7 +39,7 @@ export async function choiceValidation(req, res, next) {
 export async function choiceOptionValidation(req, res, next) {
   const pollId = ObjectId(req.params.id);
 
-  const poll = await choicesCollection.find({ pollId }).toArray();
+  const poll = await pollsCollection.find({ _id: pollId }).toArray();
 
   if (poll.length === 0) {
     return res.sendStatus(404);

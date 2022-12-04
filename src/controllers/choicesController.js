@@ -13,11 +13,7 @@ export async function postChoice(req, res, next) {
 export async function getChoices(req, res, next) {
   const pollId = ObjectId(req.params.id);
 
-  const choices = await choicesCollection.find({}).toArray();
+  const choices = await choicesCollection.find({pollId: pollId}).toArray();
 
-  const filteredChoices = choices.filter((choice) =>
-    choice.pollId.equals(pollId)
-  );
-
-  return res.status(200).send(filteredChoices);
+  return res.status(200).send(choices);
 }

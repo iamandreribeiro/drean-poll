@@ -1,10 +1,8 @@
-import { ObjectId } from "mongodb";
-import dayjs from "dayjs";
-import { choicesCollection, pollsCollection } from "../database/db.js";
+import { pollsCollection } from "../database/db.js";
 
 export async function postPoll(req, res) {
-  const title = req.body.title;
-  const expireAt = req.body.expireAt ? expireAt : newExpireAt();
+  const title = res.locals.title;
+  const expireAt = res.locals.expireAt;
 
   pollsCollection.insertOne({ title, expireAt });
 
@@ -18,43 +16,7 @@ export async function getPolls(req, res) {
 }
 
 export async function getPollResult(req, res, next) {
-  const pollId = ObjectId(req.params.id);
-
-  const poll = await pollsCollection.find({ _id: pollId }).toArray();
-
-  const choices = await choicesCollection.find({ pollId: pollId }).toArray();
-
-  let winnerOption = "";
-  let qttVotes = 0;
-
-  const promise = choices.map(async (choice) => {
-    const votes = await votesCollection
-      .find({ choiceId: choice._id })
-      .toArray();
-
-    if (votes.length > qttVotes) {
-      winnerOption = choice.title;
-      qttVotes = votes.length;
-    }
-  });
-
-  await Promise.all(promise);
-
-  const winner = {
-    _id: pollId.toString().replace(/ObjectId\("(.*)"\)/, "$1"),
-    title: poll[0].title,
-    expireAt: poll[0].expireAt,
-    result: {
-      title: winnerOption,
-      votes: qttVotes,
-    },
-  };
+  const winner = res.locals.winner;
 
   return res.status(202).send(winner);
-}
-
-function newExpireAt() {
-  const date = new Date();
-  date.setDate(date.getDate() + 30);
-  return `${date.toISOString().split('T')[0]}` + ` ` + `${dayjs().format('HH-mm')}`;  
 }
